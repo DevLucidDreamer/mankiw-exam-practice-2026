@@ -28,6 +28,8 @@ for kind,chapters in [('quiz',quiz),('application',apps)]:
  for ch,pages in chapters.items():
   current=None
   for p,x,left,right,bottom in pages:
+   if kind=='application' and bottom==685:
+    bottom=695
    if kind=='quiz' and right[0][1]-left[0][1]>20:
     right=[(0,left[0][1])]+right
    for col,anchors in enumerate([left,right]):
