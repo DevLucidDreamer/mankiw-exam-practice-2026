@@ -45,6 +45,11 @@ for kind,chapters in [('quiz',quiz),('application',apps)]:
      Image.frombytes('RGB',[pix.width,pix.height],pix.samples).save(OUT/'questions'/name,'WEBP',quality=88)
      current['images'].append('questions/'+name);current['pages'].append(p)
      current['text']+=doc[p-1].get_text(clip=rect)+'\n'
-(OUT/'data.json').write_text(json.dumps({'chapters':titles,'questions':items},ensure_ascii=False),encoding='utf-8')
+base_json=json.dumps({'chapters':titles,'questions':items},ensure_ascii=False)
+(ROOT/'textbook-data.json').write_text(base_json,encoding='utf-8')
+(OUT/'data.json').write_text(base_json,encoding='utf-8')
 (ROOT/'extracted-review.txt').write_text('\n\n'.join(q['id']+'\n'+q['text'] for q in items),encoding='utf-8')
 print('Extracted',len(items),'questions;',sum(q['kind']=='quiz' for q in items),'quiz;',sum(q['kind']=='application' for q in items),'application')
+if (ROOT/'content').is_dir():
+ import runpy
+ runpy.run_path(str(ROOT/'enrich.py'))
