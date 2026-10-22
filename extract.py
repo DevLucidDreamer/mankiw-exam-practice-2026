@@ -1,6 +1,9 @@
 import pymupdf as fitz
 import json, pathlib
 ROOT=pathlib.Path(__file__).parent
+CLEAN_PDF=ROOT.parent/'맨큐의 경제학 제 9판.pdf'
+if not CLEAN_PDF.is_file():
+ raise FileNotFoundError(f'간단한 퀴즈에는 필기 없는 제9판 PDF가 필요합니다: {CLEAN_PDF}')
 OUT=ROOT/'docs'; (OUT/'questions').mkdir(parents=True,exist_ok=True)
 doc=fitz.open(ROOT.parent/'맨큐의 경제학.pdf')
 titles={1:'경제학의 10대 기본원리',3:'상호 의존관계와 교역이득',4:'시장의 수요와 공급',5:'탄력성과 그 응용',6:'수요, 공급과 정부 정책',7:'소비자, 생산자, 시장의 효율성',9:'응용: 국제무역'}
@@ -40,9 +43,10 @@ for kind,chapters in [('quiz',quiz),('application',apps)]:
      end=anchors[j+1][1]-3 if j+1<len(anchors) else bottom
      rect=fitz.Rect(x+col*262-4,y-3,x+col*262+251,end)
      name=f"{current['id']}-{len(current['images'])+1}.webp"
-     pix=doc[p-1].get_pixmap(matrix=fitz.Matrix(2.3,2.3),clip=rect,annots=False)
-     from PIL import Image
-     Image.frombytes('RGB',[pix.width,pix.height],pix.samples).save(OUT/'questions'/name,'WEBP',quality=88)
+     if kind=='application':
+      pix=doc[p-1].get_pixmap(matrix=fitz.Matrix(2.3,2.3),clip=rect,annots=False)
+      from PIL import Image
+      Image.frombytes('RGB',[pix.width,pix.height],pix.samples).save(OUT/'questions'/name,'WEBP',quality=88)
      current['images'].append('questions/'+name);current['pages'].append(p)
      current['text']+=doc[p-1].get_text(clip=rect)+'\n'
 base_json=json.dumps({'chapters':titles,'questions':items},ensure_ascii=False)
@@ -50,6 +54,8 @@ base_json=json.dumps({'chapters':titles,'questions':items},ensure_ascii=False)
 (OUT/'data.json').write_text(base_json,encoding='utf-8')
 (ROOT/'extracted-review.txt').write_text('\n\n'.join(q['id']+'\n'+q['text'] for q in items),encoding='utf-8')
 print('Extracted',len(items),'questions;',sum(q['kind']=='quiz' for q in items),'quiz;',sum(q['kind']=='application' for q in items),'application')
+from replace_quiz_images import replace_quizzes
+replace_quizzes(CLEAN_PDF)
 if (ROOT/'content').is_dir():
  import runpy
  runpy.run_path(str(ROOT/'enrich.py'))

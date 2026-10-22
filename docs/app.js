@@ -164,7 +164,7 @@ $('#import').onchange = async e => {
   } catch { toast('올바른 학습 기록 JSON 파일을 선택해 주세요.'); }
   e.target.value = '';
 };
-fetch('data.json?v=20261022').then(r => { if (!r.ok) throw Error(); return r.json(); }).then(d => {
+fetch('data.json?v=20261022-clean9').then(r => { if (!r.ok) throw Error(); return r.json(); }).then(d => {
   data = d; $('#scope').textContent = d.scope;
   const counts = k => d.questions.filter(q => q.kind === k).length;
   $('#inventory').textContent = `교재 ${counts('quiz') + counts('application')}문항 해설 · 개념 OX ${counts('ox')}문항`;
