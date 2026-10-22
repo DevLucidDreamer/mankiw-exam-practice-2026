@@ -14,7 +14,6 @@ for q in base['questions']:
     q['explanation'] = explanations[q['id']]
     q['explanationSource'] = '학습용 자체 작성 해설 · 교재 공식 해설 아님'
     if q['id'] == '5-quiz-11':
-        q['answerChoices'] = ['a', 'b']
         q['reviewNote'] = '교재 정답표는 B입니다. 다만 소득 증가와 가격 하락이 동시에 일어났다는 관측만으로 두 탄력성의 크기를 각각 확정할 수는 없습니다. 해설에서 이 한계를 함께 확인하세요.'
 ox = []
 for path in sorted((ROOT / 'content').glob('ox-*.txt')):

@@ -93,6 +93,7 @@ with sync_playwright() as p:
       }
       selected='5-quiz-11'; records[selected]={choice:'b',checked:true,done:true}; card(data.questions);
       if (!document.querySelector('.review-note')) failures.push('missing textbook caveat');
+      if (document.querySelectorAll('[data-choice]').length!==4) failures.push('quiz 5-11 must offer all four printed choices');
       return failures;
     }""")
     assert report == [], report

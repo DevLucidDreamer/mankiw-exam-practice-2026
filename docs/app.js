@@ -164,9 +164,10 @@ $('#import').onchange = async e => {
   } catch { toast('올바른 학습 기록 JSON 파일을 선택해 주세요.'); }
   e.target.value = '';
 };
-fetch('data.json?v=20261021').then(r => { if (!r.ok) throw Error(); return r.json(); }).then(d => {
+fetch('data.json?v=20261022').then(r => { if (!r.ok) throw Error(); return r.json(); }).then(d => {
   data = d; $('#scope').textContent = d.scope;
   const counts = k => d.questions.filter(q => q.kind === k).length;
   $('#inventory').textContent = `교재 ${counts('quiz') + counts('application')}문항 해설 · 개념 OX ${counts('ox')}문항`;
   render();
+  window.Exam.init(d);
 }).catch(() => { $('#card').innerHTML = '<div class="empty">문제 데이터를 불러오지 못했습니다. 페이지를 새로고침해 주세요.</div>'; });
